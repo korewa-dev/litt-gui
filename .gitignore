@@ -1,0 +1,28 @@
+# Build output
+build/
+!build/.gitkeep
+
+# IDE files
+.vs/
+.vscode/
+*.suo
+*.user
+*.ipch
+*.sdf
+*.sln
+*.vcxproj
+
+# Compiler output
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.a
+*.dylib
+
+# CMake
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+install_manifest.txt

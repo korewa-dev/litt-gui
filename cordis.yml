@@ -1,0 +1,45 @@
+# Litt Engine GUI - Cordis Plugin Configuration
+# This file configures the C++ GUI as a Cordis plugin for the DeepSeek Harness
+
+# Plugin configuration
+plugin:
+  id: litt-gui-cpp
+  name: "Litt Engine GUI (C++)"
+  description: "Native C++ ImGui frontend for the Litt Engine Vulkan path tracer"
+
+# Build configuration
+build:
+  type: cmake
+  source_dir: "./litt-gui-cpp"
+  build_dir: "./litt-gui-cpp/build"
+  target: litt-gui
+  install_dir: "./releases"
+
+# Dependencies
+dependencies:
+  cmake: ">=3.20"
+  gcc: ">=11"
+  vulkan: ">=1.3"
+  glfw3: ">=3.3"
+  imgui: "submodule"
+
+# Runtime
+runtime:
+  engine_host: "localhost"
+  engine_port: 8080
+  window_width: 1280
+  window_height: 720
+
+# Services exposed by this plugin
+services:
+  - name: "litt_gui_build"
+    description: "Build the C++ GUI"
+    method: "build"
+  
+  - name: "litt_gui_run"
+    description: "Run the C++ GUI"
+    method: "run"
+  
+  - name: "litt_gui_check_deps"
+    description: "Check build dependencies"
+    method: "check_deps"
