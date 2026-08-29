@@ -1,4 +1,4 @@
-# Litt Engine GUI (litt-gui)
+# Litt Engine GUI
 
 A native C++ GUI frontend for the Litt Engine using Dear ImGui and Vulkan.
 
@@ -15,8 +15,7 @@ This is the native desktop GUI for Litt Engine, providing:
 ✅ **Repository exists and is functional**
 - GitHub: https://github.com/korewa-dev/litt-gui.git
 - Branch: master
-- Latest commit: 81ed610
-- All source code present
+- Latest commit: Updated with proper C bindings to Litt Engine
 
 ## Prerequisites
 
@@ -55,8 +54,10 @@ litt-gui-cpp/
 ├── imgui/             # Dear ImGui (submodule)
 └── src/
     ├── main.c         # Entry point, Vulkan init
-    ├── gui.c          # ImGui UI panels (Dashboard, Entities, Scene, etc.)
+    ├── gui.c          # ImGui UI panels
     ├── gui.h          # GUI API
+    ├── gui_bridge.h   # C++ bridge header
+    ├── gui_bridge.cpp # C++ bridge implementation
     ├── engine_bridge.c # Engine communication via TCP
     └── engine_bridge.h # Bridge API
 ```
@@ -66,10 +67,9 @@ litt-gui-cpp/
 ### GUI Panels
 1. **Dashboard** - Engine state, GPU info, render stats
 2. **Entities** - List and manage game entities
-3. **Scene** - Scene hierarchy and properties
-4. **Properties** - Component inspector
-5. **Render** - Quality settings, exposure, FOV
-6. **Display** - Camera settings, resolution
+3. **Properties** - Camera settings, transform
+4. **Render** - Quality settings, exposure, FOV
+5. **Display** - Camera settings, resolution
 
 ### Engine Bridge
 - TCP connection to Litt Engine (localhost:8080)
@@ -77,31 +77,43 @@ litt-gui-cpp/
 - Quality presets (Ultra Low to Ultra Max)
 - Camera control
 - Frame buffer streaming
-- Logging
 
-## Controls
+## Integration with Litt Engine
 
-| Key | Action |
-|-----|--------|
-| 1-6 | Quality presets (Ultra Low to Ultra Max) |
-| Space | Start/Stop rendering |
-| R | Reset render |
-| Escape | Exit |
+The GUI connects to the Litt Engine via:
+1. **TCP/Socket** - Connect to running engine instance
+2. **Direct C API** - Use `litt_c.h` bindings from `../litt engine/native/`
+3. **JSON Protocol** - Send commands via JSON-RPC
 
-## Engine Connection
+## API Reference
 
-The GUI connects to Litt Engine at `http://localhost:8080` by default.
+### C API (litt_c.h)
+```c
+// Create engine
+LittEngine* eng = litt_engine_create();
 
-The engine must be running before launching the GUI:
+// Connect to engine
+litt_connect(eng, "127.0.0.1", 8080);
 
-```bash
-# Start Litt Engine with API
-littcli server --port 8080
+// Create world
+LittWorld* world = litt_world_create("scene.json", "assets/");
 
-# Then launch GUI
-./litt-gui
+// Create entity
+litt_entity_t id = litt_world_create_entity(world, &desc);
+
+// Cleanup
+litt_world_destroy(world);
+litt_engine_destroy(eng);
+```
+
+### C++ Bridge (gui_bridge.h)
+```cpp
+LittGuiBridge bridge;
+bridge.connect("127.0.0.1", 8080);
+bridge.loadWorld("scene.json");
+bridge.createEntity(&desc);
 ```
 
 ## License
 
-MIT
+Same as Litt Engine (MIT).
