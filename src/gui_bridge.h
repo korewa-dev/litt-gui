@@ -2,7 +2,7 @@
 // Connects ImGui GUI to the C API
 
 #pragma once
-#include "litt_c.h"
+#include <litt/litt_c.h>
 #include <string>
 #include <vector>
 #include <functional>
